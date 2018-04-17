@@ -75,10 +75,10 @@ namespace twitchBot
             }
             else
             {
-                checkBox3.Enabled = false;
                 openFileDialog1.Filter = "WAV|*.wav";
                 credSetup(false);
                 optionsSetup(true);
+                checkBox3.Enabled = false;
                 speechSynthesizerObj = new SpeechSynthesizer();
                 voices = speechSynthesizerObj.GetInstalledVoices().ToList();
                 selectedVoice = voices[0];
