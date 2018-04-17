@@ -131,17 +131,18 @@ namespace twitchBot
         string format = "{n} said {m}";
         private void onMessageReceived(object sender, OnMessageReceivedArgs e)
         {
+            string message = format;
             if (checkBox1.Checked && speechSynthesizerObj.State.ToString()=="Ready" && !bannedNames.Contains(e.ChatMessage.DisplayName))
             {
                 if (format.Contains("{n}"))
                 {
-                    format = format.Replace("{n}", e.ChatMessage.DisplayName);
+                    message = message.Replace("{n}", e.ChatMessage.DisplayName);
                 }
                 if (format.Contains("{m}"))
                 {
-                    format = format.Replace("{m}", e.ChatMessage.Message);
+                    message = message.Replace("{m}", e.ChatMessage.Message);
                 }
-                speechSynthesizerObj.Speak(format);
+                speechSynthesizerObj.Speak(message);
             }
             else if (checkBox4.Checked)
             {
@@ -158,13 +159,13 @@ namespace twitchBot
             {
                 if (format.Contains("{n}"))
                 {
-                    format = format.Replace("{n}", e.ChatMessage.DisplayName);
+                    message = message.Replace("{n}", e.ChatMessage.DisplayName);
                 }
                 if (format.Contains("{m}"))
                 {
-                    format = format.Replace("{m}", e.ChatMessage.Message);
+                    message = message.Replace("{m}", e.ChatMessage.Message);
                 }
-                speechSynthesizerObj.Speak(format);
+                speechSynthesizerObj.Speak(message);
             }
         }
 
