@@ -135,11 +135,11 @@ namespace twitchBot
             {
                 if (format.Contains("{n}"))
                 {
-                    format.Replace("{n}", e.ChatMessage.DisplayName);
+                    format = format.Replace("{n}", e.ChatMessage.DisplayName);
                 }
                 if (format.Contains("{m}"))
                 {
-                    format.Replace("{m}", e.ChatMessage.Message);
+                    format = format.Replace("{m}", e.ChatMessage.Message);
                 }
                 speechSynthesizerObj.Speak(format);
             }
@@ -158,11 +158,11 @@ namespace twitchBot
             {
                 if (format.Contains("{n}"))
                 {
-                    format.Replace("{n}", e.ChatMessage.DisplayName);
+                    format = format.Replace("{n}", e.ChatMessage.DisplayName);
                 }
                 if (format.Contains("{m}"))
                 {
-                    format.Replace("{m}", e.ChatMessage.Message);
+                    format = format.Replace("{m}", e.ChatMessage.Message);
                 }
                 speechSynthesizerObj.Speak(format);
             }
