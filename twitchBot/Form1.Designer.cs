@@ -50,9 +50,9 @@
             this.comboBox2 = new System.Windows.Forms.ComboBox();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
+            this.button4 = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.button4 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -237,7 +237,7 @@
             this.textBox4.Size = new System.Drawing.Size(149, 20);
             this.textBox4.TabIndex = 18;
             this.toolTip1.SetToolTip(this.textBox4, "Type in the display name of the user you would like\r\nto be ignored by the read ou" +
-        "t loud system\r\n");
+        "t loud system\r\n\r\nEX: User\r\nINPUT: User");
             // 
             // comboBox2
             // 
@@ -255,7 +255,7 @@
             this.button2.Size = new System.Drawing.Size(121, 23);
             this.button2.TabIndex = 21;
             this.button2.Text = "Un-ban user";
-            this.toolTip1.SetToolTip(this.button2, "Click to unban the selected user from the voice list ban.\r\n");
+            this.toolTip1.SetToolTip(this.button2, "Click to unban the selected user from the voice list ban.");
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
@@ -267,9 +267,20 @@
             this.button3.TabIndex = 22;
             this.button3.Text = "Ban from voice chat";
             this.toolTip1.SetToolTip(this.button3, "Type in the display name of the user you would like\r\nto be ignored by the read ou" +
-        "t loud system");
+        "t loud system\r\n\r\nEX: User\r\nINPUT: User");
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(12, 227);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(280, 23);
+            this.button4.TabIndex = 23;
+            this.button4.Text = "Reset all settings";
+            this.toolTip1.SetToolTip(this.button4, "Reset all your settings");
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // label5
             // 
@@ -283,17 +294,6 @@
             // openFileDialog1
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
-            // 
-            // button4
-            // 
-            this.button4.Location = new System.Drawing.Point(12, 227);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(280, 23);
-            this.button4.TabIndex = 23;
-            this.button4.Text = "Reset all settings";
-            this.toolTip1.SetToolTip(this.button4, "Reset all your settings");
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // Form1
             // 
