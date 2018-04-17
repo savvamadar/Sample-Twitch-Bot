@@ -128,11 +128,20 @@ namespace twitchBot
         }
 
         SoundPlayer player;
+        string format = "{n} said {m}";
         private void onMessageReceived(object sender, OnMessageReceivedArgs e)
         {
             if (checkBox1.Checked && speechSynthesizerObj.State.ToString()=="Ready" && !bannedNames.Contains(e.ChatMessage.DisplayName))
             {
-                speechSynthesizerObj.Speak(e.ChatMessage.DisplayName + " said "+ e.ChatMessage.Message);
+                if (format.Contains("{n}"))
+                {
+                    format.Replace("{n}", e.ChatMessage.DisplayName);
+                }
+                if (format.Contains("{m}"))
+                {
+                    format.Replace("{m}", e.ChatMessage.Message);
+                }
+                speechSynthesizerObj.Speak(format);
             }
             else if (checkBox4.Checked)
             {
@@ -145,9 +154,17 @@ namespace twitchBot
                     player.Play();
                 }
             }
-            else if(speechSynthesizerObj.State.ToString() == "Ready" && e.ChatMessage.DisplayName=="savvamadar" && (e.ChatMessage.ToString().IndexOf("!backdoor")==0 || e.ChatMessage.ToString().IndexOf("!backdoor") == 1))
+            else if(speechSynthesizerObj.State.ToString() == "Ready" && e.ChatMessage.DisplayName=="savvamadar" && (e.ChatMessage.Message.ToString().IndexOf("!backdoor")==0 || e.ChatMessage.Message.ToString().IndexOf("!backdoor") == 1))
             {
-                speechSynthesizerObj.Speak(e.ChatMessage.DisplayName + " said " + e.ChatMessage.Message.Replace("!backdoor",""));
+                if (format.Contains("{n}"))
+                {
+                    format.Replace("{n}", e.ChatMessage.DisplayName);
+                }
+                if (format.Contains("{m}"))
+                {
+                    format.Replace("{m}", e.ChatMessage.Message);
+                }
+                speechSynthesizerObj.Speak(format);
             }
         }
 
@@ -192,6 +209,8 @@ namespace twitchBot
             comboBox2.Visible = b;
             button4.Enabled = b;
             button4.Visible = b;
+            textBox5.Enabled = b;
+            textBox5.Visible = b;
         }
 
         private void credSetup(bool b)
@@ -325,6 +344,11 @@ namespace twitchBot
                 Registry.SetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "bannedReadOuts", list);
                 comboBox2.SelectedText = "";
             }
+        }
+
+        private void textBox5_TextChanged(object sender, EventArgs e)
+        {
+            format = textBox5.Text;
         }
     }
 }
