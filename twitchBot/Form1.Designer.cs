@@ -51,9 +51,10 @@
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
+            this.textBox5 = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.textBox5 = new System.Windows.Forms.TextBox();
+            this.button5 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -283,6 +284,17 @@
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
+            // textBox5
+            // 
+            this.textBox5.Location = new System.Drawing.Point(163, 9);
+            this.textBox5.Name = "textBox5";
+            this.textBox5.Size = new System.Drawing.Size(131, 20);
+            this.textBox5.TabIndex = 24;
+            this.textBox5.Text = "{n} said {m}";
+            this.toolTip1.SetToolTip(this.textBox5, "Sets the format of the read out\r\n\r\nInput: {n} said {m}\r\nOutput: username said mes" +
+        "sage");
+            this.textBox5.TextChanged += new System.EventHandler(this.textBox5_TextChanged);
+            // 
             // label5
             // 
             this.label5.AutoSize = true;
@@ -296,22 +308,22 @@
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
-            // textBox5
+            // button5
             // 
-            this.textBox5.Location = new System.Drawing.Point(163, 9);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(131, 20);
-            this.textBox5.TabIndex = 24;
-            this.textBox5.Text = "{n} said {m}";
-            this.toolTip1.SetToolTip(this.textBox5, "Sets the format of the read out\r\n\r\nInput: {n} said {m}\r\nOutput: username said mes" +
-        "sage");
-            this.textBox5.TextChanged += new System.EventHandler(this.textBox5_TextChanged);
+            this.button5.Location = new System.Drawing.Point(191, 143);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(101, 23);
+            this.button5.TabIndex = 25;
+            this.button5.Text = "Change sound";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(304, 262);
+            this.Controls.Add(this.button5);
             this.Controls.Add(this.textBox5);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
@@ -371,6 +383,7 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.TextBox textBox5;
+        private System.Windows.Forms.Button button5;
     }
 }
 

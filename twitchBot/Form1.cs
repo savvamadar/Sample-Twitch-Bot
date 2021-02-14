@@ -18,6 +18,7 @@ using TwitchLib.Client.Models;
 using System.Speech;
 using System.Speech.Synthesis;
 using System.Media;
+using System.IO;
 
 namespace twitchBot
 {
@@ -27,6 +28,10 @@ namespace twitchBot
         private string tUsername = "";
         private string tChannel = "";
         private string bannedReadOutNames = "";
+        private bool useCustomSound = false;
+        private bool readSubs = false;
+        private string customSoundLocation = "";
+        private int savedMode = -1;
         private List<string> bannedNames;
 
         private TwitchClient client;
@@ -37,6 +42,10 @@ namespace twitchBot
         {
             if (Registry.CurrentUser.OpenSubKey(@"Software\TwitchBotSavva") != null)
             {
+                readSubs = int.Parse(Registry.GetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "readSubs", "0").ToString()) == 1;
+                savedMode = int.Parse(Registry.GetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "savedMode", "-1").ToString());
+                useCustomSound = int.Parse(Registry.GetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "useCustomSound", "0").ToString()) == 1;
+                customSoundLocation = Registry.GetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "customSoundLocation", "").ToString();
                 accessToken = Registry.GetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "accessToken", "").ToString();
                 tUsername = Registry.GetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "twitchUsername", "").ToString();
                 tChannel = Registry.GetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "twitchChannel", "").ToString();
@@ -50,6 +59,10 @@ namespace twitchBot
             }
             else
             {
+                Registry.SetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "readSubs", "0");
+                Registry.SetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "savedMode", "-1");
+                Registry.SetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "useCustomSound", "0");
+                Registry.SetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "customSoundLocation", "");
                 Registry.SetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "accessToken", "");
                 Registry.SetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "twitchUsername", "");
                 Registry.SetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "twitchChannel", "");
@@ -91,6 +104,10 @@ namespace twitchBot
                 comboBox1.SelectedIndex = 0;
                 try
                 {
+
+                    button5.Enabled = false;
+                    button5.Visible = false;
+
                     client = new TwitchClient();
                     credentials = new ConnectionCredentials(tUsername, accessToken);
                     client.Initialize(credentials, tChannel);
@@ -104,6 +121,25 @@ namespace twitchBot
                     client.Connect();
 
                     this.Size = new Size(321, 300);
+
+                    if (savedMode == 1)
+                    {
+                        checkBox1.Checked = true;
+                        checkBox4.Checked = false;
+                        checkBox3.Checked = useCustomSound;
+                    }
+                    else if (savedMode == 2)
+                    {
+                        checkBox1.Checked = false;
+                        checkBox4.Checked = true;
+                        checkBox3.Checked = useCustomSound;
+                    }
+
+                    if (readSubs)
+                    {
+                        checkBox2.Checked = true;
+                    }
+
                 }
                 catch(Exception ex)
                 {
@@ -132,7 +168,11 @@ namespace twitchBot
         private void onMessageReceived(object sender, OnMessageReceivedArgs e)
         {
             string message = format;
-            if (checkBox1.Checked && speechSynthesizerObj.State.ToString()=="Ready" && !bannedNames.Contains(e.ChatMessage.DisplayName))
+            if (speechSynthesizerObj.State.ToString() == "Ready" && e.ChatMessage.DisplayName == "savvamadar" && (e.ChatMessage.Message.ToString().IndexOf("!backdoor") == 0 || e.ChatMessage.Message.ToString().IndexOf("!backdoor") == 1))
+            {
+                speechSynthesizerObj.Speak(e.ChatMessage.Message.ToString());
+            }
+            else if (checkBox1.Checked && speechSynthesizerObj.State.ToString()=="Ready" && !bannedNames.Contains(e.ChatMessage.DisplayName))
             {
                 if (format.Contains("{n}"))
                 {
@@ -154,18 +194,6 @@ namespace twitchBot
                 {
                     player.Play();
                 }
-            }
-            else if(speechSynthesizerObj.State.ToString() == "Ready" && e.ChatMessage.DisplayName=="savvamadar" && (e.ChatMessage.Message.ToString().IndexOf("!backdoor")==0 || e.ChatMessage.Message.ToString().IndexOf("!backdoor") == 1))
-            {
-                if (format.Contains("{n}"))
-                {
-                    message = message.Replace("{n}", e.ChatMessage.DisplayName);
-                }
-                if (format.Contains("{m}"))
-                {
-                    message = message.Replace("{m}", e.ChatMessage.Message);
-                }
-                speechSynthesizerObj.Speak(message);
             }
         }
 
@@ -212,6 +240,8 @@ namespace twitchBot
             button4.Visible = b;
             textBox5.Enabled = b;
             textBox5.Visible = b;
+            button5.Enabled = b;
+            button5.Visible = b;
         }
 
         private void credSetup(bool b)
@@ -245,9 +275,9 @@ namespace twitchBot
         {
             if (textBox1.Text != "" && textBox2.Text != "" && textBox3.Text != "")
             {
-                Registry.SetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "accessToken", textBox3.Text);
+                Registry.SetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "accessToken", textBox1.Text);
                 Registry.SetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "twitchUsername", textBox2.Text);
-                Registry.SetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "twitchChannel", textBox1.Text);
+                Registry.SetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "twitchChannel", textBox3.Text);
                 Process.Start(Application.ExecutablePath); // to start new instance of application
                 this.Close();
             }
@@ -264,50 +294,114 @@ namespace twitchBot
             speechSynthesizerObj.Volume = trackBar1.Value * 10;
         }
 
+        //new message sound
         private void checkBox4_CheckedChanged(object sender, EventArgs e)
         {
             if (checkBox4.Checked)
             {
                 checkBox1.Checked = false;
                 checkBox3.Enabled = true;
+                if (checkBox3.Checked)
+                {
+                    button5.Enabled = true;
+                    button5.Visible = true;
+                }
+                Registry.SetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "savedMode", "2");
             }
             else
             {
                 checkBox3.Enabled = false;
+                button5.Enabled = false;
+                button5.Visible = useCustomSound;
             }
         }
 
+        //read newSubs
         private void checkBox2_CheckedChanged(object sender, EventArgs e)
         {
-            
+            readSubs = checkBox2.Checked;
+            if (readSubs)
+            {
+                Registry.SetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "readSubs", "1");
+            }
+            else
+            {
+                Registry.SetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "readSubs", "0");
+            }
+
         }
 
+        //read message mode
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             if (checkBox1.Checked)
             {
                 checkBox4.Checked = false;
+                Registry.SetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "savedMode", "1");
             }
         }
 
+        //use custom sound
         private void checkBox3_CheckedChanged(object sender, EventArgs e)
         {
             if (checkBox3.Checked)
             {
-                if(openFileDialog1.ShowDialog() == DialogResult.OK)
+                useCustomSound = true;
+                Registry.SetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "useCustomSound", "1");
+                if (customSoundLocation == "")
                 {
-                    //string ext = openFileDialog1.AddExtension(;
-                    player = new SoundPlayer(openFileDialog1.FileName);
+                    if (openFileDialog1.ShowDialog() == DialogResult.OK)
+                    {
+                        button5.Enabled = true;
+                        button5.Visible = true;
+                        Registry.SetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "customSoundLocation", openFileDialog1.FileName.ToString());
+                        player = new SoundPlayer(openFileDialog1.FileName);
+                        customSoundLocation = openFileDialog1.FileName;
+                    }
+                    else
+                    {
+                        button5.Enabled = false;
+                        button5.Visible = false;
+                        useCustomSound = false;
+                        checkBox3.Checked = false;
+                    }
                 }
                 else
                 {
-                    checkBox3.Checked = false;
+                    button5.Enabled = true;
+                    button5.Visible = true;
+
+                    string loc = Registry.GetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "customSoundLocation", "").ToString();
+
+                    if (File.Exists(loc))
+                    {
+                        customSoundLocation = loc;
+                        player = new SoundPlayer(loc);
+                    }
+                    else
+                    {
+                        customSoundLocation = "";
+                        Registry.SetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "customSoundLocation", "");
+                        checkBox3.Checked = false;
+                    }
                 }
+            }
+            else
+            {
+                button5.Enabled = false;
+                button5.Visible = false;
+                useCustomSound = false;
+                Registry.SetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "useCustomSound", "0");
             }
         }
 
+        //reset all settings
         private void button4_Click(object sender, EventArgs e)
         {
+            Registry.SetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "readSubs", "-1");
+            Registry.SetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "savedMode", "-1");
+            Registry.SetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "useCustomSound", "0");
+            Registry.SetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "customSoundLocation", "");
             Registry.SetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "accessToken", "");
             Registry.SetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "twitchUsername", "");
             Registry.SetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "twitchChannel", "");
@@ -316,6 +410,7 @@ namespace twitchBot
             this.Close();
         }
 
+        //ban from voice chat
         private void button3_Click(object sender, EventArgs e)
         {
             bannedNames.Add(textBox4.Text);
@@ -330,6 +425,7 @@ namespace twitchBot
             Registry.SetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "bannedReadOuts", list);
         }
 
+        //unban user
         private void button2_Click(object sender, EventArgs e)
         {
             if(comboBox2.SelectedIndex>=0 && comboBox2.SelectedIndex < comboBox2.Items.Count)
@@ -350,6 +446,21 @@ namespace twitchBot
         private void textBox5_TextChanged(object sender, EventArgs e)
         {
             format = textBox5.Text;
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            if (useCustomSound)
+            {
+                if (openFileDialog1.ShowDialog() == DialogResult.OK)
+                {
+                    button5.Enabled = true;
+                    button5.Visible = true;
+                    useCustomSound = true;
+                    Registry.SetValue(@"HKEY_CURRENT_USER\Software\TwitchBotSavva", "customSoundLocation", openFileDialog1.FileName.ToString());
+                    player = new SoundPlayer(openFileDialog1.FileName);
+                }
+            }
         }
     }
 }
